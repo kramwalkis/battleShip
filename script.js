@@ -1,17 +1,23 @@
-const container = document.getElementById('container')
-const arrSquareIds = []
-
+const container = document.getElementById("container");
+const arrSquareIds = [];
 
 function renderSquares() {
-    for (let x=0; x<10; x++) {
-        for (let y=0; y<10; y++) {
-            let slot = document.createElement('div')
-            slot.setAttribute('id', `x:${x} y:${y}`)
-            arrSquareIds.push(`x:${x} y:${y}`)
-            container.appendChild(slot)
-        }
-    }
+  let number = 0;
+  for (let x = 0; x < 100; x++) {    
+      let slot = document.createElement("div");
+      slot.setAttribute("id", x);
+      slot.innerText = number;
+      number++;
+      arrSquareIds.push(x);
+      container.appendChild(slot);
+    
+  }
 }
 
-renderSquares() 
+renderSquares();
 
+function allPlacesFor4Piece() {
+  let verticalPositions = [];
+  arrSquareIds.map((item, index) => {});
+}
+allPlacesFor4Piece();
