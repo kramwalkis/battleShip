@@ -1,3 +1,22 @@
-body {
-    color: red;
+
+
+#container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    background-color: rgb(241, 204, 155);
+    height: 700px;
+    width: 680px;
 }
+
+#container div {
+    background-color: rgb(66, 148, 180);
+    height: 58px;
+    width: 58px;
+    margin: 4px;
+
+    
+}
+
+
