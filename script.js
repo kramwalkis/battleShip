@@ -4,6 +4,7 @@ let arrayOfShips4 = [];
 let arrayOfShips3 = [];
 let arrayOfShips2 = [];
 let arrayOfShips1 = [];
+let randomSelectedShip4 = []
 
 function renderSquares() {
   for (let x = 0; x < 100; x++) {
@@ -96,5 +97,12 @@ function findNeighbors(num) {
     num - 1,
   ];
 }
+
+function randomSelectFromArr(arr) {
+    return arr[Math.floor(Math.random() * arr.length)]
+}
+
+randomSelectedShip4 = randomSelectFromArr(arrayOfShips4);
+
 
 
