@@ -7,7 +7,7 @@ let arrayOfShips1 = [];
 let randomSelectedShip4 = [];
 let randomSelectedShip3 = [];
 let randomSelectedShip2 = [];
-let selectedShips = []
+let selectedShips = [];
 
 function renderSquares() {
   for (let x = 0; x < 100; x++) {
@@ -66,30 +66,31 @@ arrayOfShips1 = [...arrSquareIds];
 
 function findNeighbors(num) {
   if (num === 0) {
-    return [1, 10, 11];
+    return [num, 1, 10, 11];
   }
   if (num === 9) {
-    return [8, 18, 19];
+    return [num, 8, 18, 19];
   }
   if (num === 90) {
-    return [80, 81, 91];
+    return [num, 80, 81, 91];
   }
   if (num === 99) {
-    return [88, 89, 98];
+    return [num, 88, 89, 98];
   }
   if (num >= 1 && num <= 8) {
-    return [num - 1, num + 1, num + 9, num + 10, num + 11];
+    return [num, num - 1, num + 1, num + 9, num + 10, num + 11];
   }
   if (num >= 91 && num <= 98) {
-    return [num - 1, num - 11, num - 10, num - 9, num + 1];
+    return [num, num - 1, num - 11, num - 10, num - 9, num + 1];
   }
   if (num !== 90 && num !== 0 && num.toString()[1] === "0") {
-    return [num - 10, num - 9, num + 1, num + 11, num + 10];
+    return [num, num - 10, num - 9, num + 1, num + 11, num + 10];
   }
   if (num !== 9 && num !== 99 && num.toString()[1] === "9") {
-    return [num - 10, num - 11, num - 1, num + 9, num + 10];
+    return [num, num - 10, num - 11, num - 1, num + 9, num + 10];
   }
   return [
+    num,
     num - 11,
     num - 10,
     num - 9,
@@ -102,7 +103,7 @@ function findNeighbors(num) {
 }
 
 function randomSelectFromArr(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];  
+  return arr[Math.floor(Math.random() * arr.length)];
 }
 
 function updateEmptySlots(ship, arr) {
@@ -125,90 +126,75 @@ function checkIfIncludes(arr, checker) {
 }
 
 randomSelectedShip4 = randomSelectFromArr(arrayOfShips4);
-selectedShips.push(randomSelectedShip4)
+selectedShips.push(randomSelectedShip4);
 
 arrSquareIds = updateEmptySlots(randomSelectedShip4, arrSquareIds);
 arrayOfShips3 = updateArrOfShips(arrayOfShips3, arrSquareIds);
 randomSelectedShip3 = randomSelectFromArr(arrayOfShips3);
-selectedShips.push(randomSelectedShip3)
-
+selectedShips.push(randomSelectedShip3);
 
 arrSquareIds = updateEmptySlots(randomSelectedShip3, arrSquareIds);
 arrayOfShips3 = updateArrOfShips(arrayOfShips3, arrSquareIds);
 randomSelectedShip3 = randomSelectFromArr(arrayOfShips3);
-selectedShips.push(randomSelectedShip3)
+selectedShips.push(randomSelectedShip3);
 
 arrSquareIds = updateEmptySlots(randomSelectedShip3, arrSquareIds);
 arrayOfShips2 = updateArrOfShips(arrayOfShips2, arrSquareIds);
 randomSelectedShip2 = randomSelectFromArr(arrayOfShips2);
-selectedShips.push(randomSelectedShip2)
+selectedShips.push(randomSelectedShip2);
 
 arrSquareIds = updateEmptySlots(randomSelectedShip2, arrSquareIds);
 arrayOfShips2 = updateArrOfShips(arrayOfShips2, arrSquareIds);
 randomSelectedShip2 = randomSelectFromArr(arrayOfShips2);
-selectedShips.push(randomSelectedShip2)
+selectedShips.push(randomSelectedShip2);
 
 arrSquareIds = updateEmptySlots(randomSelectedShip2, arrSquareIds);
 arrayOfShips2 = updateArrOfShips(arrayOfShips2, arrSquareIds);
 randomSelectedShip2 = randomSelectFromArr(arrayOfShips2);
-selectedShips.push(randomSelectedShip2)
+selectedShips.push(randomSelectedShip2);
 
 arrSquareIds = updateEmptySlots(randomSelectedShip2, arrSquareIds);
 console.log(arrSquareIds);
-selectedShips.push([randomSelectFromArr(arrSquareIds)])
-arrSquareIds = updateEmptySlots(selectedShips[selectedShips.length-1], arrSquareIds);
-console.log(arrSquareIds);
-selectedShips.push([randomSelectFromArr(arrSquareIds)])
-arrSquareIds = updateEmptySlots(selectedShips[selectedShips.length-1], arrSquareIds);
-console.log(arrSquareIds);
-selectedShips.push([randomSelectFromArr(arrSquareIds)])
-arrSquareIds = updateEmptySlots(selectedShips[selectedShips.length-1], arrSquareIds);
-console.log(arrSquareIds);
-selectedShips.push([randomSelectFromArr(arrSquareIds)])
+selectedShips.push([randomSelectFromArr(arrSquareIds)]);
+arrSquareIds = updateEmptySlots(
+  selectedShips[selectedShips.length - 1],
+  arrSquareIds
+);
 
+console.log(arrSquareIds);
+selectedShips.push([randomSelectFromArr(arrSquareIds)]);
+arrSquareIds = updateEmptySlots(
+  selectedShips[selectedShips.length - 1],
+  arrSquareIds
+);
+console.log(arrSquareIds);
+selectedShips.push([randomSelectFromArr(arrSquareIds)]);
+arrSquareIds = updateEmptySlots(
+  selectedShips[selectedShips.length - 1],
+  arrSquareIds
+);
+console.log(arrSquareIds);
+selectedShips.push([randomSelectFromArr(arrSquareIds)]);
 
 function spreadSlotsToColor(arr) {
-    let returnArray = []
-    arr.map(item => {
-    returnArray = [...returnArray, ...item]
-    })
-    return returnArray
+  let returnArray = [];
+  arr.map((item) => {
+    returnArray = [...returnArray, ...item];
+  });
+  return returnArray;
 }
 
 function color(arr, slots) {
-  let array = Array.from(arr)  
-  array.map(item => {
-     let pixel = document.getElementById(item.id)
-     console.log(pixel);
-     if (slots.includes(Number(pixel.id))) {
-         console.log('hello');
-         pixel.classList.add('red')
-     } 
-  })
+  let array = Array.from(arr);
+  array.map((item) => {
+    let pixel = document.getElementById(item.id);
+    if (slots.includes(Number(pixel.id))) {
+      pixel.classList.add("red");
+    }
+  });
 }
 
-let slotsToColor = spreadSlotsToColor(selectedShips)
-console.log(slotsToColor);
-color(container.children, slotsToColor)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+let slotsToColor = spreadSlotsToColor(selectedShips);
+color(container.children, slotsToColor);
 
 console.log(selectedShips);
