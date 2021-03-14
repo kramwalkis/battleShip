@@ -14,3 +14,7 @@
   width: 58px;
   margin: 4px;
 }
+
+.red {
+    background-color: red !important;
+}
