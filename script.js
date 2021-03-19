@@ -19,8 +19,6 @@ function renderSquares() {
   }
 }
 
-renderSquares();
-
 function renderPossiblePositions(arr, times) {
   let verticalArr = [];
   let horizontalArr = [];
@@ -59,10 +57,6 @@ function renderPossiblePositions(arr, times) {
   arr = [...horizontalArr, ...verticalArr];
   return arr;
 }
-arrayOfShips4 = renderPossiblePositions(arrayOfShips4, 4);
-arrayOfShips3 = renderPossiblePositions(arrayOfShips3, 3);
-arrayOfShips2 = renderPossiblePositions(arrayOfShips2, 2);
-arrayOfShips1 = [...arrSquareIds];
 
 function findNeighbors(num) {
   if (num === 0) {
@@ -125,6 +119,31 @@ function checkIfIncludes(arr, checker) {
   return returnArray.length !== arr.length ? true : false;
 }
 
+function spreadSlotsToColor(arr) {
+  let returnArray = [];
+  arr.map((item) => {
+    returnArray = [...returnArray, ...item];
+  });
+  return returnArray;
+}
+
+function color(arr, slots) {
+  let array = Array.from(arr);
+  array.map((item) => {
+    let pixel = document.getElementById(item.id);
+    if (slots.includes(Number(pixel.id))) {
+      pixel.classList.add("red");
+    }
+  });
+}
+
+
+
+renderSquares();
+arrayOfShips4 = renderPossiblePositions(arrayOfShips4, 4);
+arrayOfShips3 = renderPossiblePositions(arrayOfShips3, 3);
+arrayOfShips2 = renderPossiblePositions(arrayOfShips2, 2);
+
 randomSelectedShip4 = randomSelectFromArr(arrayOfShips4);
 selectedShips.push(randomSelectedShip4);
 
@@ -154,45 +173,25 @@ randomSelectedShip2 = randomSelectFromArr(arrayOfShips2);
 selectedShips.push(randomSelectedShip2);
 
 arrSquareIds = updateEmptySlots(randomSelectedShip2, arrSquareIds);
-console.log(arrSquareIds);
 selectedShips.push([randomSelectFromArr(arrSquareIds)]);
 arrSquareIds = updateEmptySlots(
   selectedShips[selectedShips.length - 1],
   arrSquareIds
 );
 
-console.log(arrSquareIds);
 selectedShips.push([randomSelectFromArr(arrSquareIds)]);
 arrSquareIds = updateEmptySlots(
   selectedShips[selectedShips.length - 1],
   arrSquareIds
 );
-console.log(arrSquareIds);
+
 selectedShips.push([randomSelectFromArr(arrSquareIds)]);
 arrSquareIds = updateEmptySlots(
   selectedShips[selectedShips.length - 1],
   arrSquareIds
 );
-console.log(arrSquareIds);
+
 selectedShips.push([randomSelectFromArr(arrSquareIds)]);
-
-function spreadSlotsToColor(arr) {
-  let returnArray = [];
-  arr.map((item) => {
-    returnArray = [...returnArray, ...item];
-  });
-  return returnArray;
-}
-
-function color(arr, slots) {
-  let array = Array.from(arr);
-  array.map((item) => {
-    let pixel = document.getElementById(item.id);
-    if (slots.includes(Number(pixel.id))) {
-      pixel.classList.add("red");
-    }
-  });
-}
 
 let slotsToColor = spreadSlotsToColor(selectedShips);
 color(container.children, slotsToColor);
