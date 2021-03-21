@@ -263,4 +263,57 @@ selectedShips = renderShips(
 );
 arrOfHitShips = [...selectedShips];
 
+///////////////////////
 
+/// Try to make AI
+let allPositions = [];
+let positionCounter = {};
+
+function allShipsCombine() {
+  for (let x = 0; x <= 99; x++) {
+    arrayOfShips1.push([x]);
+    let id = x.toString();
+    // console.log(id);
+    positionCounter = {
+      ...positionCounter,
+      [id]: 0,
+    };
+  }
+  allPositions = [
+    ...arrayOfShips1,
+    ...arrayOfShips2,
+    ...arrayOfShips3,
+    ...arrayOfShips4,
+  ];
+}
+
+allShipsCombine();
+
+function calculateSquareProbability() {
+  allPositions.map((item) => {
+    item.map((el) => {
+      let id = el.toString();
+      positionCounter[id]++;
+    });
+  });
+}
+calculateSquareProbability();
+
+let entries = Object.entries(positionCounter);
+
+// console.log(allPositions);
+// console.log(positionCounter);
+// console.log(entries);
+
+let arrOfChance = [];
+
+function possibilityArray() {
+  for (let option in positionCounter) {
+    for (let x = 0; x < positionCounter[option]; x++) {     
+      arrOfChance.push(option);
+    }
+  }
+}
+possibilityArray()
+
+console.log(arrOfChance);
