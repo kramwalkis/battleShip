@@ -49,5 +49,9 @@ body {
 
 
 .injured {
-  background-color: rgb(247, 99, 45);
+  background-color: rgb(218, 215, 53);
+}
+
+.hit {
+  background-color: rgb(9, 126, 28);
 }

@@ -8,6 +8,7 @@ let arrayOfShips2 = [];
 let arrayOfShips1 = [];
 let randomSelectedShip = [];
 let selectedShips = [];
+let arrOfHitShips = [];
 
 function renderSquares() {
   for (let x = 0; x < 100; x++) {
@@ -135,29 +136,39 @@ function checkIfIncludes(arr, checker) {
 // }
 
 function color(id, arr) {
-  console.log(arr);
   let trigger = false;
   arr.map((item) => {
     item.includes(Number(id)) ? (trigger = true) : null;
   });
   trigger
-    ? changeColor(id, container.children, selectedShips)
+    ? changeColor(id, container.children, arrOfHitShips)
     : missedShot(id, container.children);
 }
 
 function changeColor(id, arr, shipArr) {
+  let shot = Number(id);
   let array = Array.from(arr);
-  array.map((slot) => {
-    if (slot.id === id) {
-      checkIfHitOrDead(id, shipArr)
-      document.getElementById(slot.id).classList.add("injured");
-      document.getElementById(slot.id).removeEventListener("click", shotTarget);
+  shipArr.map((item, index) => {
+    if (item.includes(shot)) {
+      document.getElementById(id).classList.add("injured");
+      document.getElementById(id).removeEventListener("click", shotTarget);
+      checkIfFullShipIsHit(item);
     }
   });
 }
 
-function checkIfHitOrDead(id, arr) {
-
+function checkIfFullShipIsHit(ship) {
+  let array = Array.from(container.children);
+  let trigger = true;
+  ship.map((item) => {
+    array[item].classList.contains("injured") ? null : (trigger = false);
+  });
+  if (trigger) {
+    ship.map((item) => {
+      array[item].classList.remove("injured");
+      array[item].classList.add("hit");
+    });
+  }
 }
 
 function missedShot(id, arr) {
@@ -228,10 +239,10 @@ selectedShips = renderShips(
   arrayOfShips3,
   arrayOfShips4
 );
+arrOfHitShips = [...selectedShips];
+
 // let slotsToColor = spreadSlotsToColor(selectedShips);
 // color(container.children, slotsToColor);
-
-console.log(selectedShips);
 
 // randomSelectedShip = randomSelectFromArr(arrayOfShips4);
 // selectedShips.push(randomSelectedShip);
