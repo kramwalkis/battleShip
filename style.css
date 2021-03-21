@@ -1,18 +1,23 @@
 body {
   display: flex;
   align-items: center;
+  justify-content: center;
   flex-direction: column;
+  height: 620px;
 }
 
 #container {
-  display: flex;
+  display: none;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
-  align-content: center;
-  background-color: rgb(241, 204, 155);
+  align-content: center;  
   height: 540px;
   width: 540px;
+  background-image: url(https://media.giphy.com/media/r2DZ7c7zrY1jO/giphy.gif);
+ 
+  background-size: 540px 540px;
+  background-repeat: no-repeat;
 }
 
 #container div {  
@@ -20,20 +25,41 @@ body {
   width: 48px;
   margin: 2px;
   cursor: pointer;
+  
+
 }
 
 .teal {
-  background-color: rgb(48, 143, 206);
+  background-color: rgb(48, 143, 206, 0.8);
 }
 
 .missed {
-  background-color: rgb(44, 62, 167);
+  background-color: rgb(44, 62, 167, 0.8);
 }
 
 #score {
   text-align: center;
   margin: 15px;
   font-size: 25px;
+  display: none;
+}
+
+#start {
+  font-size: 45px;
+  background-color: rgb(96, 27, 160);
+  color: white;
+  text-align: center;
+  padding: 10px;
+  border: 5px solid rgb(29, 167, 167);
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+#start:hover {
+  background-color: rgb(29, 167, 167);
+  border: 5px solid rgb(96, 27, 160);
+
+  transition: 0.3s;
 }
 
 #playAgain {
@@ -44,7 +70,9 @@ body {
   text-align: center;
   padding: 10px;
   margin: 15px;
+  cursor: pointer;
   display: none;
+  /* display: none; */
 }
 
 
