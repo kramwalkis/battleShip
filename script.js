@@ -1,22 +1,29 @@
 const container = document.getElementById("container");
+const score = document.getElementById("score");
+let points = 120;
 let arrSquareIds = [];
 let arrayOfShips4 = [];
 let arrayOfShips3 = [];
 let arrayOfShips2 = [];
 let arrayOfShips1 = [];
-let randomSelectedShip4 = [];
-let randomSelectedShip3 = [];
-let randomSelectedShip2 = [];
+let randomSelectedShip = [];
 let selectedShips = [];
 
 function renderSquares() {
   for (let x = 0; x < 100; x++) {
     let slot = document.createElement("div");
+    slot.classList.add("teal");
     slot.setAttribute("id", x);
-    slot.innerText = x;
+    slot.addEventListener("click", shotTarget);
+    // slot.innerText = x;
     arrSquareIds.push(x);
     container.appendChild(slot);
   }
+}
+
+function shotTarget(e) {
+  let id = e.target.id;
+  color(id, selectedShips);
 }
 
 function renderPossiblePositions(arr, times) {
@@ -119,81 +126,166 @@ function checkIfIncludes(arr, checker) {
   return returnArray.length !== arr.length ? true : false;
 }
 
-function spreadSlotsToColor(arr) {
-  let returnArray = [];
+// function spreadSlotsToColor(arr) {
+//   let returnArray = [];
+//   arr.map((item) => {
+//     returnArray = [...returnArray, ...item];
+//   });
+//   return returnArray;
+// }
+
+function color(id, arr) {
+  console.log(arr);
+  let trigger = false;
   arr.map((item) => {
-    returnArray = [...returnArray, ...item];
+    item.includes(Number(id)) ? (trigger = true) : null;
   });
-  return returnArray;
+  trigger
+    ? changeColor(id, container.children, selectedShips)
+    : missedShot(id, container.children);
 }
 
-function color(arr, slots) {
+function changeColor(id, arr, shipArr) {
   let array = Array.from(arr);
-  array.map((item) => {
-    let pixel = document.getElementById(item.id);
-    if (slots.includes(Number(pixel.id))) {
-      pixel.classList.add("red");
+  array.map((slot) => {
+    if (slot.id === id) {
+      checkIfHitOrDead(id, shipArr)
+      document.getElementById(slot.id).classList.add("injured");
+      document.getElementById(slot.id).removeEventListener("click", shotTarget);
     }
   });
 }
 
+function checkIfHitOrDead(id, arr) {
 
+}
+
+function missedShot(id, arr) {
+  let array = Array.from(arr);
+  array.map((slot) => {
+    if (slot.id === id) {
+      document.getElementById(slot.id).classList.add("missed");
+      document.getElementById(slot.id).removeEventListener("click", shotTarget);
+    }
+  });
+  points -= 1;
+  score.innerText = `Score: ${points}`;
+}
+
+function renderShips(arrOfId, arr2, arr3, arr4) {
+  let selected = [];
+  let returnArray = [];
+
+  selected = randomSelectFromArr(arr4);
+  returnArray.push(selected);
+
+  arrOfId = updateEmptySlots(selected, arrOfId);
+  arr3 = updateArrOfShips(arr3, arrOfId);
+  selected = randomSelectFromArr(arr3);
+  returnArray.push(selected);
+
+  arrOfId = updateEmptySlots(selected, arrOfId);
+  arr3 = updateArrOfShips(arr3, arrOfId);
+  selected = randomSelectFromArr(arr3);
+  returnArray.push(selected);
+
+  arrOfId = updateEmptySlots(selected, arrOfId);
+  arr2 = updateArrOfShips(arr2, arrOfId);
+  selected = randomSelectFromArr(arr2);
+  returnArray.push(selected);
+
+  arrOfId = updateEmptySlots(selected, arrOfId);
+  arr2 = updateArrOfShips(arr2, arrOfId);
+  selected = randomSelectFromArr(arr2);
+  returnArray.push(selected);
+
+  arrOfId = updateEmptySlots(selected, arrOfId);
+  arr2 = updateArrOfShips(arr2, arrOfId);
+  selected = randomSelectFromArr(arr2);
+  returnArray.push(selected);
+
+  arrOfId = updateEmptySlots(selected, arrOfId);
+  returnArray.push([randomSelectFromArr(arrOfId)]);
+  arrOfId = updateEmptySlots(returnArray[returnArray.length - 1], arrOfId);
+
+  returnArray.push([randomSelectFromArr(arrOfId)]);
+  arrOfId = updateEmptySlots(returnArray[returnArray.length - 1], arrOfId);
+
+  returnArray.push([randomSelectFromArr(arrOfId)]);
+  arrOfId = updateEmptySlots(returnArray[returnArray.length - 1], arrOfId);
+  returnArray.push([randomSelectFromArr(arrOfId)]);
+
+  return returnArray;
+}
 
 renderSquares();
 arrayOfShips4 = renderPossiblePositions(arrayOfShips4, 4);
 arrayOfShips3 = renderPossiblePositions(arrayOfShips3, 3);
 arrayOfShips2 = renderPossiblePositions(arrayOfShips2, 2);
-
-randomSelectedShip4 = randomSelectFromArr(arrayOfShips4);
-selectedShips.push(randomSelectedShip4);
-
-arrSquareIds = updateEmptySlots(randomSelectedShip4, arrSquareIds);
-arrayOfShips3 = updateArrOfShips(arrayOfShips3, arrSquareIds);
-randomSelectedShip3 = randomSelectFromArr(arrayOfShips3);
-selectedShips.push(randomSelectedShip3);
-
-arrSquareIds = updateEmptySlots(randomSelectedShip3, arrSquareIds);
-arrayOfShips3 = updateArrOfShips(arrayOfShips3, arrSquareIds);
-randomSelectedShip3 = randomSelectFromArr(arrayOfShips3);
-selectedShips.push(randomSelectedShip3);
-
-arrSquareIds = updateEmptySlots(randomSelectedShip3, arrSquareIds);
-arrayOfShips2 = updateArrOfShips(arrayOfShips2, arrSquareIds);
-randomSelectedShip2 = randomSelectFromArr(arrayOfShips2);
-selectedShips.push(randomSelectedShip2);
-
-arrSquareIds = updateEmptySlots(randomSelectedShip2, arrSquareIds);
-arrayOfShips2 = updateArrOfShips(arrayOfShips2, arrSquareIds);
-randomSelectedShip2 = randomSelectFromArr(arrayOfShips2);
-selectedShips.push(randomSelectedShip2);
-
-arrSquareIds = updateEmptySlots(randomSelectedShip2, arrSquareIds);
-arrayOfShips2 = updateArrOfShips(arrayOfShips2, arrSquareIds);
-randomSelectedShip2 = randomSelectFromArr(arrayOfShips2);
-selectedShips.push(randomSelectedShip2);
-
-arrSquareIds = updateEmptySlots(randomSelectedShip2, arrSquareIds);
-selectedShips.push([randomSelectFromArr(arrSquareIds)]);
-arrSquareIds = updateEmptySlots(
-  selectedShips[selectedShips.length - 1],
-  arrSquareIds
+selectedShips = renderShips(
+  arrSquareIds,
+  arrayOfShips2,
+  arrayOfShips3,
+  arrayOfShips4
 );
-
-selectedShips.push([randomSelectFromArr(arrSquareIds)]);
-arrSquareIds = updateEmptySlots(
-  selectedShips[selectedShips.length - 1],
-  arrSquareIds
-);
-
-selectedShips.push([randomSelectFromArr(arrSquareIds)]);
-arrSquareIds = updateEmptySlots(
-  selectedShips[selectedShips.length - 1],
-  arrSquareIds
-);
-
-selectedShips.push([randomSelectFromArr(arrSquareIds)]);
-
-let slotsToColor = spreadSlotsToColor(selectedShips);
-color(container.children, slotsToColor);
+// let slotsToColor = spreadSlotsToColor(selectedShips);
+// color(container.children, slotsToColor);
 
 console.log(selectedShips);
+
+// randomSelectedShip = randomSelectFromArr(arrayOfShips4);
+// selectedShips.push(randomSelectedShip);
+
+// arrSquareIds = updateEmptySlots(randomSelectedShip, arrSquareIds);
+// arrayOfShips3 = updateArrOfShips(arrayOfShips3, arrSquareIds);
+// randomSelectedShip = randomSelectFromArr(arrayOfShips3);
+// selectedShips.push(randomSelectedShip);
+
+// arrSquareIds = updateEmptySlots(randomSelectedShip, arrSquareIds);
+// arrayOfShips3 = updateArrOfShips(arrayOfShips3, arrSquareIds);
+// randomSelectedShip = randomSelectFromArr(arrayOfShips3);
+// selectedShips.push(randomSelectedShip);
+
+// arrSquareIds = updateEmptySlots(randomSelectedShip, arrSquareIds);
+// arrayOfShips2 = updateArrOfShips(arrayOfShips2, arrSquareIds);
+// randomSelectedShip = randomSelectFromArr(arrayOfShips2);
+// selectedShips.push(randomSelectedShip);
+
+// arrSquareIds = updateEmptySlots(randomSelectedShip, arrSquareIds);
+// arrayOfShips2 = updateArrOfShips(arrayOfShips2, arrSquareIds);
+// randomSelectedShip = randomSelectFromArr(arrayOfShips2);
+// selectedShips.push(randomSelectedShip);
+
+// arrSquareIds = updateEmptySlots(randomSelectedShip, arrSquareIds);
+// arrayOfShips2 = updateArrOfShips(arrayOfShips2, arrSquareIds);
+// randomSelectedShip = randomSelectFromArr(arrayOfShips2);
+// selectedShips.push(randomSelectedShip);
+
+// arrSquareIds = updateEmptySlots(randomSelectedShip, arrSquareIds);
+// selectedShips.push([randomSelectFromArr(arrSquareIds)]);
+// arrSquareIds = updateEmptySlots(
+//   selectedShips[selectedShips.length - 1],
+//   arrSquareIds
+// );
+
+// selectedShips.push([randomSelectFromArr(arrSquareIds)]);
+// arrSquareIds = updateEmptySlots(
+//   selectedShips[selectedShips.length - 1],
+//   arrSquareIds
+// );
+
+// selectedShips.push([randomSelectFromArr(arrSquareIds)]);
+// arrSquareIds = updateEmptySlots(
+//   selectedShips[selectedShips.length - 1],
+//   arrSquareIds
+// );
+
+// selectedShips.push([randomSelectFromArr(arrSquareIds)]);
+
+// let array = Array.from(arr);
+//   array.map((item) => {
+//     let pixel = document.getElementById(item.id);
+//     if (slots.includes(Number(pixel.id))) {
+//       pixel.classList.add("red");
+//     }
+//   });
