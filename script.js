@@ -42,7 +42,7 @@ const renderFunc = {
       let slot = document.createElement("div");
       slot.classList.add("teal");
       slot.setAttribute("id", x);
-      slot.addEventListener("click", shotTarget);
+      slot.addEventListener("click", colorFunc.shotTarget);
       arrSquareIds.push(x);
       container.appendChild(slot);
     }
@@ -202,63 +202,67 @@ const renderFunc = {
   },
 };
 
-function color(id, arr) {
-  let trigger = false;
-  arr.map((item) => {
-    item.includes(Number(id)) ? (trigger = true) : null;
-  });
-  trigger ? changeColor(id, arrOfHitShips) : missedShot(id, container.children);
-}
-
-function changeColor(id, shipArr) {
-  let shot = Number(id);
-  shipArr.map((item) => {
-    if (item.includes(shot)) {
-      document.getElementById(id).classList.add("injured");
-      document.getElementById(id).removeEventListener("click", shotTarget);
-      checkIfFullShipIsHit(item);
-      counter++;
-      if (counter === 20) {
-        let array = Array.from(container.children);
-        for (let x = 0; x <= 99; x++) {
-          array[x].removeEventListener("click", shotTarget);
-          playAgain.style.display = "block";
+const colorFunc = {
+  color: (id, arr) => {
+    let trigger = false;
+    arr.map((item) => {
+      item.includes(Number(id)) ? (trigger = true) : null;
+    });
+    trigger
+      ? colorFunc.changeColor(id, arrOfHitShips)
+      : colorFunc.missedShot(id, container.children);
+  },
+  changeColor: (id, shipArr) => {
+    let shot = Number(id);
+    shipArr.map((item) => {
+      if (item.includes(shot)) {
+        document.getElementById(id).classList.add("injured");
+        document.getElementById(id).removeEventListener("click", colorFunc.shotTarget);
+        colorFunc.checkIfFullShipIsHit(item);
+        counter++;
+        if (counter === 20) {
+          let array = Array.from(container.children);
+          for (let x = 0; x <= 99; x++) {
+            array[x].removeEventListener("click", colorFunc.shotTarget);
+            playAgain.style.display = "block";
+          }
         }
       }
-    }
-  });
-}
-
-function checkIfFullShipIsHit(ship) {
-  let array = Array.from(container.children);
-  let trigger = true;
-  ship.map((item) => {
-    array[item].classList.contains("injured") ? null : (trigger = false);
-  });
-  if (trigger) {
-    ship.map((item) => {
-      array[item].classList.remove("injured");
-      array[item].classList.add("hit");
     });
-  }
-}
-
-function missedShot(id, arr) {
-  let array = Array.from(arr);
-  array.map((slot) => {
-    if (slot.id === id) {
-      document.getElementById(slot.id).classList.add("missed");
-      document.getElementById(slot.id).removeEventListener("click", shotTarget);
+  },
+  checkIfFullShipIsHit: (ship) => {
+    let array = Array.from(container.children);
+    let trigger = true;
+    ship.map((item) => {
+      array[item].classList.contains("injured") ? null : (trigger = false);
+    });
+    if (trigger) {
+      ship.map((item) => {
+        array[item].classList.remove("injured");
+        array[item].classList.add("hit");
+      });
     }
-  });
-  points -= 1;
-  score.innerText = `Score: ${points}`;
-}
+  },
+  missedShot: (id, arr) => {
+    let array = Array.from(arr);
+    array.map((slot) => {
+      if (slot.id === id) {
+        document.getElementById(slot.id).classList.add("missed");
+        document
+          .getElementById(slot.id)
+          .removeEventListener("click", colorFunc.shotTarget);
+      }
+    });
+    points -= 1;
+    score.innerText = `Score: ${points}`;
+  },
+  shotTarget: (e) => {
+    let id = e.target.id;
+    colorFunc.color(id, selectedShips);
+  },
+};
 
-function shotTarget(e) {
-  let id = e.target.id;
-  color(id, selectedShips);
-}
+
 
 renderFunc.renderSquares();
 arrayOfShips4 = renderFunc.renderPossiblePositions(arrayOfShips4, 4);
