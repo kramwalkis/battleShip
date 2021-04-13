@@ -14,6 +14,12 @@ let arrayOfShips1 = [];
 let randomSelectedShip = [];
 let selectedShips = [];
 let arrOfHitShips = [];
+let allPositions = [];
+let positionCounter = {};
+let arrOfChance = [];
+let shot;
+let injuredPositions = [];
+let arrOfHitSpots = [];
 
 playAgain.addEventListener("click", reRender);
 start.addEventListener("click", reRender);
@@ -26,8 +32,8 @@ function reRender() {
   container.innerHTML = "";
   points = 120;
   score.innerText = `Score: ${points}`;
-  renderSquares();
-  selectedShips = renderShips(
+  renderFunc.renderSquares();
+  selectedShips = renderFunc.renderShips(
     arrSquareIds,
     arrayOfShips2,
     arrayOfShips3,
@@ -100,6 +106,13 @@ const renderFunc = {
     returnArray.push([renderFunc.randomSelectFromArr(arrOfId)]);
 
     return returnArray;
+  },
+  renderArrayForPosition1: () => {
+    let arr = [];
+    for (let x = 0; x < 100; x++) {
+      arr.push([x]);
+    }
+    return arr;
   },
   renderPossiblePositions: (arr, times) => {
     let verticalArr = [];
@@ -217,7 +230,9 @@ const colorFunc = {
     shipArr.map((item) => {
       if (item.includes(shot)) {
         document.getElementById(id).classList.add("injured");
-        document.getElementById(id).removeEventListener("click", colorFunc.shotTarget);
+        document
+          .getElementById(id)
+          .removeEventListener("click", colorFunc.shotTarget);
         colorFunc.checkIfFullShipIsHit(item);
         counter++;
         if (counter === 20) {
@@ -262,68 +277,175 @@ const colorFunc = {
   },
 };
 
-
+const pcFunc = {
+  positionStart: (counter) => {
+    for (let x = 0; x <= 99; x++) {
+      let id = x.toString();
+      counter = {
+        ...counter,
+        [id]: 0,
+      };
+    }
+    return counter;
+  },
+  calculateSquareProbability: (arr, obj) => {
+    arr.map((item) => {
+      item.map((el) => {
+        let id = el.toString();
+        obj[id]++;
+      });
+    });
+    return obj;
+  },
+  renderPossibilityArrayAll: (obj) => {
+    let arr = [];
+    for (let option in obj) {
+      for (let x = 0; x < obj[option]; x++) {
+        arr.push(option);
+      }
+    }
+    return arr;
+  },
+  filterDownRegular: (arr, shot) => {
+    return arr.filter((item) => !item.includes(Number(shot)));
+  },
+  filterDownInjured: (arr, sortingArray) => {
+    let returnArray = [...arr];
+    sortingArray.map((item) => {
+      returnArray = returnArray.filter((el) => el.includes(Number(item)));
+    });
+    return returnArray;
+  },
+  filterDownWhenFullShipIsDown: (arr, sortingArray) => {
+    let returnArray = [...arr];
+    sortingArray.map((item) => {
+      returnArray = returnArray.filter((el) => !el.includes(Number(item)));
+    });
+    return returnArray;
+  },
+  removeWhatIsHitFromNextShot: (obj, sortingArr) => {
+    sortingArr.map((item) => {
+      obj[item] = 0;
+    });
+    return obj;
+  },
+  sortByProbability: (obj) => {
+    let arr = [];
+    for (let number in obj) {
+      arr.push([number, obj[number]]);
+    }
+    arr.sort((a, b) => {
+      return b[1] - a[1];
+    });
+    return arr;
+  },
+  addNeighborsToArr: (arr) => {
+    let arrOfHit = [];
+    let arrOfNeighbors = [];
+    arr.map((item, index) => {
+      item.classList.contains("hit") ? arrOfHit.push(index) : null;
+    });
+    arrOfHit.map((item) => {
+      arrOfNeighbors = [...arrOfNeighbors, ...renderFunc.findNeighbors(item)];
+    });
+    return (arrOfNeighbors = [...new Set(arrOfNeighbors)]);
+  },
+};
 
 renderFunc.renderSquares();
 arrayOfShips4 = renderFunc.renderPossiblePositions(arrayOfShips4, 4);
 arrayOfShips3 = renderFunc.renderPossiblePositions(arrayOfShips3, 3);
 arrayOfShips2 = renderFunc.renderPossiblePositions(arrayOfShips2, 2);
+arrayOfShips1 = renderFunc.renderArrayForPosition1();
 selectedShips = renderFunc.renderShips(
   arrSquareIds,
   arrayOfShips2,
   arrayOfShips3,
   arrayOfShips4
 );
+positionCounter = pcFunc.positionStart(positionCounter);
 arrOfHitShips = [...selectedShips];
+allPositions = [
+  ...arrayOfShips1,
+  ...arrayOfShips2,
+  ...arrayOfShips3,
+  ...arrayOfShips4,
+];
+positionCounter = pcFunc.calculateSquareProbability(
+  allPositions,
+  positionCounter
+);
+arrOfChance = pcFunc.renderPossibilityArrayAll(positionCounter);
+shot = renderFunc.randomSelectFromArr(arrOfChance);
+let injuredTrigger = false;
+let shotCount = 0;
+while (shotCount < 20) {
+  console.log(shot, shotCount);
+  
+  colorFunc.color(shot, selectedShips);
+  
+  let array = Array.from(container.children);
+  if (array[shot].classList.contains("missed")) {
+    if (injuredTrigger === false) {
+      allPositions = pcFunc.filterDownRegular(allPositions, shot);
+      positionCounter = pcFunc.positionStart(positionCounter);
+      positionCounter = pcFunc.calculateSquareProbability(
+        allPositions,
+        positionCounter
+      );
+      arrOfChance = pcFunc.renderPossibilityArrayAll(positionCounter);
+      shot = renderFunc.randomSelectFromArr(arrOfChance);
+    } else {
+      allPositions = pcFunc.filterDownRegular(allPositions, shot);
+      injuredPositions = pcFunc.filterDownInjured(allPositions, arrOfHitSpots);
+      positionCounter = pcFunc.positionStart(positionCounter);
+      positionCounter = pcFunc.calculateSquareProbability(
+        injuredPositions,
+        positionCounter
+      );
+      positionCounter = pcFunc.removeWhatIsHitFromNextShot(
+        positionCounter,
+        arrOfHitSpots
+      );
+      arrOfChance = pcFunc.sortByProbability(positionCounter);
+      shot = arrOfChance[0][0];
+      injuredTrigger = true;
+      // shotCount++;
 
-///////////////////////
+    }
+  } else if (array[shot].classList.contains("hit")) {
+    arrOfHitSpots = pcFunc.addNeighborsToArr(array);
+    
+    allPositions = pcFunc.filterDownWhenFullShipIsDown(allPositions, arrOfHitSpots);
 
-/// Try to make AI
-// let allPositions = [];
-// let positionCounter = {};
-
-// function allShipsCombine() {
-//   for (let x = 0; x <= 99; x++) {
-//     arrayOfShips1.push([x]);
-//     let id = x.toString();
-//     positionCounter = {
-//       ...positionCounter,
-//       [id]: 0,
-//     };
-//   }
-//   allPositions = [
-//     ...arrayOfShips1,
-//     ...arrayOfShips2,
-//     ...arrayOfShips3,
-//     ...arrayOfShips4,
-//   ];
-// }
-// allShipsCombine();
-// let arrOfChance = [];
-// calculateSquareProbability(allPositions);
-// possibilityArray();
-// let shotSelected = randomSelectFromArr(arrOfChance);
-// let injuredTrigger = false;
-// let positionsWhenHit = [];
-// let injuredPositions = [];
-// pcLogic(shotSelected);
-
-// function calculateSquareProbability(arr) {
-//   arr.map((item) => {
-//     item.map((el) => {
-//       let id = el.toString();
-//       positionCounter[id]++;
-//     });
-//   });
-// }
-
-// function possibilityArray() {
-//   for (let option in positionCounter) {
-//     for (let x = 0; x < positionCounter[option]; x++) {
-//       arrOfChance.push(option);
-//     }
-//   }
-// }
+    injuredTrigger = false;
+    shotCount++;
+    arrOfHitSpots = []
+    positionCounter = pcFunc.positionStart(positionCounter);
+      positionCounter = pcFunc.calculateSquareProbability(
+        allPositions,
+        positionCounter
+      );
+      arrOfChance = pcFunc.renderPossibilityArrayAll(positionCounter);
+      shot = renderFunc.randomSelectFromArr(arrOfChance);
+  } else if (array[shot].classList.contains("injured")) {
+    arrOfHitSpots.push(shot);
+    injuredPositions = pcFunc.filterDownInjured(allPositions, arrOfHitSpots);
+    positionCounter = pcFunc.positionStart(positionCounter);
+    positionCounter = pcFunc.calculateSquareProbability(
+      injuredPositions,
+      positionCounter
+    );
+    positionCounter = pcFunc.removeWhatIsHitFromNextShot(
+      positionCounter,
+      arrOfHitSpots
+    );
+    arrOfChance = pcFunc.sortByProbability(positionCounter);
+    shot = arrOfChance[0][0];
+    injuredTrigger = true;
+    shotCount++;
+  }
+}
 
 // function makeValues0(obj) {
 //   for (let position in obj) {
