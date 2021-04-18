@@ -1,33 +1,50 @@
 body {
   display: flex;
   align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  height: 620px;
+  justify-content: center;  
+ 
 }
 
-#container {
-  display: flex
-  ;
+#pcContainer {
+  display: flex;
   flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   align-content: center;  
   height: 540px;
   width: 540px;
-  background-image: url(https://media.giphy.com/media/r2DZ7c7zrY1jO/giphy.gif);
- 
+  background-image: url(https://media.giphy.com/media/r2DZ7c7zrY1jO/giphy.gif); 
   background-size: 540px 540px;
   background-repeat: no-repeat;
+  margin: 20px;
 }
 
-#container div {  
+#myContainer {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  align-content: center;  
+  height: 540px;
+  width: 540px;
+  background-image: url(https://media.giphy.com/media/r2DZ7c7zrY1jO/giphy.gif); 
+  background-size: 540px 540px;
+  background-repeat: no-repeat;
+  margin: 20px;
+}
+
+#pcContainer div {  
   height: 48px;
   width: 48px;
   margin: 2px;
-  cursor: pointer;
-  
+  cursor: pointer; 
+}
 
+#myContainer div {
+  height: 48px;
+  width: 48px;
+  margin: 2px;
+  cursor: pointer; 
 }
 
 .teal {
@@ -38,45 +55,6 @@ body {
   background-color: rgb(44, 62, 167, 0.8);
 }
 
-#score {
-  text-align: center;
-  margin: 15px;
-  font-size: 25px;
-  display: none;
-}
-
-#start {
-  font-size: 45px;
-  background-color: rgb(96, 27, 160);
-  color: white;
-  text-align: center;
-  padding: 10px;
-  border: 5px solid rgb(29, 167, 167);
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-#start:hover {
-  background-color: rgb(29, 167, 167);
-  border: 5px solid rgb(96, 27, 160);
-
-  transition: 0.3s;
-}
-
-#playAgain {
-  width: 140px;
-  font-size: 20px;
-  background-color: rgb(25, 165, 25);
-  color: white;
-  text-align: center;
-  padding: 10px;
-  margin: 15px;
-  cursor: pointer;
-  display: none;
-  /* display: none; */
-}
-
-
 .injured {
   background-color: rgb(218, 215, 53);
 }
@@ -84,3 +62,41 @@ body {
 .hit {
   background-color: rgb(9, 126, 28);
 }
+
+.options {
+  display: flex;
+  margin: 3px 10px 3px 10px;
+  justify-content: center;
+}
+
+.option {
+  padding: 8px;
+  border: 3px solid salmon;
+  text-align: center;
+  margin: 5px;
+  background-color: rgb(16, 122, 34);
+  cursor: pointer;
+  transition: 0.2s;
+  color: white;
+  border-radius: 8px;
+}
+
+.option:hover {
+  background-color: rgb(50, 235, 96);
+  transition: 0.2s;
+}
+
+.or {
+  padding: 8px;
+  margin: 5px;  
+}
+
+.orange {
+  background-color: orange;
+}
+
+.gray {
+  background-color: gray;
+}
+
+
