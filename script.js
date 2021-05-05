@@ -12,9 +12,9 @@ const playAgain = document.getElementById("playAgain");
 const endGame = document.getElementById("endGame");
 const winner = document.getElementById("winner");
 
-
 let pcScore = 0;
 let myScore = 0;
+let injuredTrigger = false;
 let arrSquareIds = [];
 let arrayOfShips4 = [];
 let arrayOfShips3 = [];
@@ -41,15 +41,14 @@ let shot;
 let injuredPositions = [];
 let arrOfHitSpots = [];
 
-
 const renderFunc = {
+  // This function fills container with squares
   renderSquares: () => {
     for (let x = 0; x < 100; x++) {
       let slot = document.createElement("div");
       let mySlot = document.createElement("div");
       slot.classList.add("teal");
       mySlot.classList.add("teal");
-      // mySlot.classList.add("empty");
       slot.setAttribute("id", x);
       mySlot.setAttribute("id", `my${x}`);
       arrSquareIds.push(x);
@@ -57,6 +56,7 @@ const renderFunc = {
       myContainer.appendChild(mySlot);
     }
   },
+  /// Function returns array with PC random ships
   renderShips: (arrOfId, arr2, arr3, arr4) => {
     let selected = [];
     let returnArray = [];
@@ -110,6 +110,7 @@ const renderFunc = {
     returnArray.push([renderFunc.randomSelectFromArr(arrOfId)]);
     return returnArray;
   },
+  /// Returns array 0 to 99, possible positions for 1 piece ship
   renderArrayForPosition1: () => {
     let arr = [];
     for (let x = 0; x < 100; x++) {
@@ -117,6 +118,7 @@ const renderFunc = {
     }
     return arr;
   },
+  /// Returns array with all possible positions for different ship sizes
   renderPossiblePositions: (arr, times) => {
     let verticalArr = [];
     let horizontalArr = [];
@@ -127,11 +129,13 @@ const renderFunc = {
         positionHorizontal.push(item + x);
         positionVertical.push(item + x * 10);
       }
+      /// Checks lat number of particular slot
       let horizontalConditions = [
         item.toString()[item.toString().length - 1] !== "7",
         item.toString()[item.toString().length - 1] !== "8",
         item.toString()[item.toString().length - 1] !== "9",
       ];
+      /// Checks lat number of particular slot
       let verticalConditions = [
         item.toString()[0] !== "7",
         item.toString()[0] !== "8",
@@ -155,6 +159,7 @@ const renderFunc = {
     arr = [...horizontalArr, ...verticalArr];
     return arr;
   },
+  //// Returns neighboring squares
   findNeighbors: (num) => {
     if (num === 0) {
       return [num, 1, 10, 11];
@@ -195,6 +200,7 @@ const renderFunc = {
   randomSelectFromArr: (arr) => {
     return arr[Math.floor(Math.random() * arr.length)];
   },
+  /// Updates array of slots that can be chosen
   updateEmptySlots: (ship, arr) => {
     let arrWithNeighbors = [];
     ship.map((item) => {
@@ -219,6 +225,7 @@ const renderFunc = {
 };
 
 const colorFunc = {
+  /// Decides how to color a square
   color: (id, arr, children, string) => {
     let trigger = false;
     arr.map((item) => {
@@ -228,6 +235,7 @@ const colorFunc = {
       ? colorFunc.changeColor(id, arr, string, children)
       : colorFunc.missedShot(id, children, string);
   },
+  /// Colors squares when hit
   changeColor: (id, shipArr, string, children) => {
     let shot = Number(id);
     shipArr.map((item) => {
@@ -237,7 +245,6 @@ const colorFunc = {
           .getElementById(`${string}${id}`)
           .removeEventListener("click", colorFunc.shotTarget);
         string === "" ? myScore++ : pcScore++;
-        myScore >= 20 || pcScore >= 20 ? gamePlay.finish() : null;
         colorFunc.checkIfFullShipIsHit(item, children);
       }
     });
@@ -255,6 +262,7 @@ const colorFunc = {
       });
     }
   },
+  /// Colors missed shot
   missedShot: (id, arr, string) => {
     let array = Array.from(arr);
     array.map((slot) => {
@@ -266,6 +274,7 @@ const colorFunc = {
       }
     });
   },
+  /// basic my move then pc move
   shotTarget: (e) => {
     let id = e.target.id;
     colorFunc.color(id, pcShips, pcContainer.children, "");
@@ -277,6 +286,7 @@ const colorFunc = {
 };
 
 const pcFunc = {
+  //// Returns an object keys 0-99, value - 0
   positionStart: (counter) => {
     for (let x = 0; x <= 99; x++) {
       let id = x.toString();
@@ -287,6 +297,7 @@ const pcFunc = {
     }
     return counter;
   },
+  /// Makes object according to probability of each squares
   calculateSquareProbability: (arr, obj) => {
     arr.map((item) => {
       item.map((el) => {
@@ -296,6 +307,7 @@ const pcFunc = {
     });
     return obj;
   },
+  /// Returns possibility array
   renderPossibilityArrayAll: (obj) => {
     let arr = [];
     for (let option in obj) {
@@ -305,9 +317,11 @@ const pcFunc = {
     }
     return arr;
   },
+  /// Array filtering when missed shot
   filterDownRegular: (arr, shot) => {
     return arr.filter((item) => !item.includes(Number(shot)));
   },
+  /// Array filtering when ship is injured
   filterDownInjured: (arr, sortingArray) => {
     let returnArray = [...arr];
     sortingArray.map((item) => {
@@ -315,6 +329,7 @@ const pcFunc = {
     });
     return returnArray;
   },
+  // Array filtering when full ship is hit
   filterDownWhenFullShipIsDown: (arr, sortingArray) => {
     let returnArray = [...arr];
     sortingArray.map((item) => {
@@ -322,12 +337,14 @@ const pcFunc = {
     });
     return returnArray;
   },
+  /// Removes slot when injured so that would not hit it again
   removeWhatIsHitFromNextShot: (obj, sortingArr) => {
     sortingArr.map((item) => {
       obj[item] = 0;
     });
     return obj;
   },
+  /// Takes and Object and returns sorted array
   sortByProbability: (obj) => {
     let arr = [];
     for (let number in obj) {
@@ -352,6 +369,7 @@ const pcFunc = {
 };
 
 const shipAdd = {
+  /// Manages mouse enter and leave events when adding ships
   setArray: (array) => {
     shipAdd.removeListeners();
     selectedArray = [...array];
@@ -367,6 +385,7 @@ const shipAdd = {
         .addEventListener("click", shipAdd.addShip);
     });
   },
+  /// Adds ship on my container
   addShip: (e) => {
     let id = Number(e.target.id.slice(2));
     shipToColor = selectedArray.filter((el) => el[0] === id);
@@ -379,6 +398,7 @@ const shipAdd = {
     shipAdd.updatePossibleArrays(myShips);
     shipAdd.countShips(myShips);
   },
+  ///Counts ships and hides ship adding buttons when needed
   countShips: (array) => {
     let counter3 = 0;
     let counter2 = 0;
@@ -406,6 +426,7 @@ const shipAdd = {
       start.addEventListener("click", gamePlay.start);
     }
   },
+  //// Updates array of ships that according to what has been selected before
   updatePossibleArrays: (array) => {
     array.map((ship) => {
       ship.map((el) => {
@@ -421,6 +442,7 @@ const shipAdd = {
     myVertical2 = shipAdd.arrayClearing(takenSlots, myVertical2);
     ships1 = shipAdd.arrayClearing(takenSlots, ships1);
   },
+  /// Clears array from taken slots
   arrayClearing: (taken, array) => {
     let returnArray = [];
     let trigger = false;
@@ -432,12 +454,15 @@ const shipAdd = {
     });
     return returnArray;
   },
+  /// Removes coloring from ship button
   makeButtonsNormal: () => {
     let buttons = document.getElementsByClassName("option");
     for (let x = 0; x < buttons.length; x++) {
-      buttons[x].style.background = "linear-gradient(90deg, rgba(129,230,217,1) 0%, rgba(79,209,197,1) 100%)";
+      buttons[x].style.background =
+        "linear-gradient(90deg, rgba(129,230,217,1) 0%, rgba(79,209,197,1) 100%)";
     }
   },
+  /// Add color on selected ship position on mouse enter
   colorOnHover: (e) => {
     let id = Number(e.target.id.slice(2));
     shipToColor = selectedArray.filter((el) => el[0] === id);
@@ -445,6 +470,7 @@ const shipAdd = {
       document.getElementById(`my${item}`).classList.add("orange");
     });
   },
+  /// Removes color from selected ship position on mouse leave
   removeColorOnHover: (e) => {
     let id = Number(e.target.id.slice(2));
     shipToColor = selectedArray.filter((el) => el[0] === id);
@@ -454,6 +480,7 @@ const shipAdd = {
       });
     }
   },
+  /// Removes event listeners on slots after ship is placed
   removeListeners: () => {
     let array = Array(myContainer.children);
     for (let x = 0; x < array[0].length; x++) {
@@ -465,6 +492,7 @@ const shipAdd = {
         .removeEventListener("click", shipAdd.addShip);
     }
   },
+  /// Colors ship button option and set witch ship will get colored on the board
   select: (e) => {
     let buttons = document.getElementsByClassName("option");
     for (let x = 0; x < buttons.length; x++) {
@@ -484,6 +512,7 @@ const shipAdd = {
 };
 
 const gamePlay = {
+  /// Hides start button and adds event listeners so that I am to start the game
   start: () => {
     let start = document.getElementById("startButton");
     start.style.display = "none";
@@ -492,17 +521,21 @@ const gamePlay = {
       item.addEventListener("click", colorFunc.shotTarget);
     });
   },
+  /// After I make a shot removes event listeners so I could not make a shot until PC makes a shot
   removeListener: () => {
     let array = Array.from(pcContainer.children);
     array.map((item) => {
       item.removeEventListener("click", colorFunc.shotTarget);
     });
   },
+  /// PC makes a move and call a function to decide where to shoot next and call a function to addEventListeners so I could make a move
   pcMove: () => {
     colorFunc.color(shot, myShips, myContainer.children, "my");
     gamePlay.nextShot();
     gamePlay.addListener();
+    myScore >= 20 || pcScore >= 20 ? gamePlay.finish() : null;
   },
+  /// PC decides on next move
   nextShot: () => {
     let array = Array.from(myContainer.children);
     if (array[shot].classList.contains("missed")) {
@@ -540,8 +573,7 @@ const gamePlay = {
         allPositions,
         arrOfHitSpots
       );
-      injuredTrigger = false;
-      shotCount++;
+      injuredTrigger = false;    
       arrOfHitSpots = [];
       positionCounter = pcFunc.positionStart(positionCounter);
       positionCounter = pcFunc.calculateSquareProbability(
@@ -573,14 +605,19 @@ const gamePlay = {
       item.addEventListener("click", colorFunc.shotTarget);
     });
   },
+  /// Checks the scores and declares a winner
   finish: () => {
-    myContainer.style.opacity = "0.7"
-    pcContainer.style.opacity = "0.7"
-    if (myScore<pcScore) {
-      winner.innerText = "YOU LOSE"
-      winner.style.color = "red"      
+    myContainer.style.opacity = "0.7";
+    pcContainer.style.opacity = "0.7";
+    if (myScore < pcScore) {
+      winner.innerText = "YOU LOSE";
+      winner.style.color = "red";
+    } else if (myScore === pcScore) {
+      winner.innerText = "IT IS A DRAW";
+      winner.style.color = "gray";
     }
-    endGame.style.display = "block"
+    endGame.style.display = "block";
+    gamePlay.removeListener();
   },
 };
 
@@ -594,7 +631,7 @@ ship1.addEventListener("click", shipAdd.select);
 startGame.addEventListener("click", gamePlay.start);
 endGame.addEventListener("click", () => {
   location.reload();
-})
+});
 
 renderFunc.renderSquares();
 arrayOfShips4 = renderFunc.renderPossiblePositions(arrayOfShips4, 4);
@@ -628,5 +665,4 @@ positionCounter = pcFunc.calculateSquareProbability(
 );
 arrOfChance = pcFunc.renderPossibilityArrayAll(positionCounter);
 shot = renderFunc.randomSelectFromArr(arrOfChance);
-let injuredTrigger = false;
-let shotCount = 0;
+
