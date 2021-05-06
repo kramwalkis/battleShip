@@ -573,7 +573,7 @@ const gamePlay = {
         allPositions,
         arrOfHitSpots
       );
-      injuredTrigger = false;    
+      injuredTrigger = false;
       arrOfHitSpots = [];
       positionCounter = pcFunc.positionStart(positionCounter);
       positionCounter = pcFunc.calculateSquareProbability(
@@ -600,7 +600,13 @@ const gamePlay = {
     }
   },
   addListener: () => {
-    let array = Array.from(pcContainer.children);
+    let array = Array.from(pcContainer.children);    
+    array = array.filter(
+      (item) =>
+        !item.classList.contains("missed") &&
+        !item.classList.contains("injured") &&
+        !item.classList.contains("hit")
+    );
     array.map((item) => {
       item.addEventListener("click", colorFunc.shotTarget);
     });
@@ -665,4 +671,3 @@ positionCounter = pcFunc.calculateSquareProbability(
 );
 arrOfChance = pcFunc.renderPossibilityArrayAll(positionCounter);
 shot = renderFunc.randomSelectFromArr(arrOfChance);
-
